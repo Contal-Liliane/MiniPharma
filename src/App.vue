@@ -9,12 +9,15 @@ import {
   getMedicaments,
   addMedicament,
   deleteMedicament,
-  updateMedicament
+  updateMedicament,
+  searchMedicaments,
+  changerApi
 } from './Medicaments.js'
 
 const medicaments = ref([])
 const modMedicament = ref(null)
 
+// charger
 const chargerMedicaments = () => {
   getMedicaments()
       .then(data => {
@@ -22,6 +25,7 @@ const chargerMedicaments = () => {
       })
 }
 
+// ajouter
 const ajouterMedicament = (nouveau) => {
   addMedicament(nouveau)
       .then(() => {
@@ -29,6 +33,7 @@ const ajouterMedicament = (nouveau) => {
       })
 }
 
+// supprimer
 const supprimerMedicament = (id) => {
   deleteMedicament(id)
       .then(() => {
@@ -36,7 +41,9 @@ const supprimerMedicament = (id) => {
       })
 }
 
+// +1 -1
 const modifierQuantite = (med, delta) => {
+
   updateMedicament({
     id: med.id,
     qte: med.qte + delta
@@ -46,11 +53,27 @@ const modifierQuantite = (med, delta) => {
       })
 }
 
+// modifier
 const modifierMedicament = (modif) => {
+
   updateMedicament(modif)
       .then(() => {
         chargerMedicaments()
         modMedicament.value = null
+      })
+}
+
+// recherche
+const rechercher = (mot) => {
+
+  if (mot === "") {
+    chargerMedicaments()
+    return
+  }
+
+  searchMedicaments(mot)
+      .then(data => {
+        medicaments.value = data
       })
 }
 
@@ -60,29 +83,33 @@ onMounted(() => {
 </script>
 
 <template>
+
   <h1>Ma pharmacie</h1>
 
-  <FormulaireAjout @ajouter="ajouterMedicament" />
+  <!-- recherche -->
+  <input
+      type="text"
+      placeholder="Rechercher..."
+      @input="rechercher($event.target.value)"
+  >
 
-  <ul>
-    <li v-for="med in medicaments" :key="med.id">
+  <br><br>
 
-      {{ med.denomination }} -
-      {{ med.formepharmaceutique }} -
-      Quantité : {{ med.qte }}
+  <!-- ajout -->
+  <FormulaireAjout
+      @ajouter="ajouterMedicament"
+  />
 
-      <br>
+  <!-- liste -->
+  <ListeMedicaments
+      :medicaments="medicaments"
+      @plus="(med) => modifierQuantite(med, 1)"
+      @moins="(med) => modifierQuantite(med, -1)"
+      @supprimer="supprimerMedicament"
+      @modifier="modMedicament = $event"
+  />
 
-      <button @click="modifierQuantite(med, 1)">+1</button>
-      <button @click="modifierQuantite(med, -1)">-1</button>
-      <button @click="supprimerMedicament(med.id)">Supprimer</button>
-      <button @click="modMedicament = med">Modifier</button>
-
-      <br><br>
-
-    </li>
-  </ul>
-
+  <!-- modifier -->
   <ModifierMedicaments
       v-if="modMedicament"
       :medicament="modMedicament"

@@ -1,9 +1,16 @@
 <script setup>
 defineProps(['medicaments'])
-defineEmits(['supprimer', 'plus', 'moins'])
+
+defineEmits([
+  'supprimer',
+  'plus',
+  'moins',
+  'modifier'
+])
 </script>
 
 <template>
+
   <div v-for="med in medicaments" :key="med.id" class="card">
 
     <h3>{{ med.denomination }}</h3>
@@ -17,13 +24,22 @@ defineEmits(['supprimer', 'plus', 'moins'])
         width="100"
     />
 
-    <br>
+    <br><br>
 
     <button @click="$emit('plus', med)">+1</button>
+
     <button @click="$emit('moins', med)">-1</button>
-    <button @click="$emit('supprimer', med.id)">Supprimer</button>
+
+    <button @click="$emit('supprimer', med.id)">
+      Supprimer
+    </button>
+
+    <button @click="$emit('modifier', med)">
+      Modifier
+    </button>
 
   </div>
+
 </template>
 
 <style>

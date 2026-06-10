@@ -1,10 +1,17 @@
-const apiUrl = "https://apipharmacie.pecatte.fr/api/5/medicaments"
+let apiUrl = "https://apipharmacie.pecatte.fr/api/5/medicaments"
 
+// changer api
+export const changerApi = 105 => {
+    apiUrl = `https://apipharmacie.pecatte.fr/api/${id}/medicaments`
+}
+
+// GET
 export const getMedicaments = () => {
     return fetch(apiUrl)
         .then(res => res.json())
 }
 
+// POST
 export const addMedicament = (nouveau) => {
     return fetch(apiUrl, {
         method: "POST",
@@ -16,6 +23,7 @@ export const addMedicament = (nouveau) => {
         .then(res => res.json())
 }
 
+// DELETE
 export const deleteMedicament = (id) => {
     return fetch(`${apiUrl}/${id}`, {
         method: "DELETE"
@@ -23,6 +31,7 @@ export const deleteMedicament = (id) => {
         .then(res => res.json())
 }
 
+// PUT
 export const updateMedicament = (modif) => {
     return fetch(apiUrl, {
         method: "PUT",
@@ -31,5 +40,11 @@ export const updateMedicament = (modif) => {
         },
         body: JSON.stringify(modif)
     })
+        .then(res => res.json())
+}
+
+// SEARCH
+export const searchMedicaments = (mot) => {
+    return fetch(`${apiUrl}?search=${mot}`)
         .then(res => res.json())
 }
