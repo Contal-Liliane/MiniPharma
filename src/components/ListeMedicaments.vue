@@ -11,7 +11,11 @@ defineEmits([
 
 <template>
 
-  <div v-for="med in medicaments" :key="med.id" class="card">
+  <div
+      v-for="med in medicaments"
+      :key="med.id"
+      class="card"
+  >
 
     <h3>{{ med.denomination }}</h3>
 
@@ -20,15 +24,20 @@ defineEmits([
     <p>Quantité : {{ med.qte }}</p>
 
     <img
+        v-if="med.photo"
         :src="'https://apipharmacie.pecatte.fr/images/' + med.photo"
         width="100"
     />
 
     <br><br>
 
-    <button @click="$emit('plus', med)">+1</button>
+    <button @click="$emit('plus', med)">
+      +1
+    </button>
 
-    <button @click="$emit('moins', med)">-1</button>
+    <button @click="$emit('moins', med)">
+      -1
+    </button>
 
     <button @click="$emit('supprimer', med.id)">
       Supprimer

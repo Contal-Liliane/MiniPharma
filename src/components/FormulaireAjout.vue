@@ -4,11 +4,12 @@ import { ref } from 'vue'
 const emit = defineEmits(['ajouter'])
 
 const denomination = ref("")
+const denominationMagique = ref("")
 const forme = ref("")
 const qte = ref(1)
 const photo = ref("")
 
-// image → base64
+// image
 const handleFileUpload = (event) => {
 
   const file = event.target.files[0]
@@ -18,24 +19,34 @@ const handleFileUpload = (event) => {
   const reader = new FileReader()
 
   reader.onload = () => {
+
     photo.value = reader.result
   }
 
   reader.readAsDataURL(file)
 }
 
+// ajout
 const envoyer = () => {
 
   const nouveau = {
+
     denomination: denomination.value,
+
+    denominationMagique: denominationMagique.value,
+
     formepharmaceutique: forme.value,
-    qte: qte.value,
+
+    qte: Number(qte.value),
+
     photo: photo.value
   }
 
   emit('ajouter', nouveau)
 
+  // reset
   denomination.value = ""
+  denominationMagique.value = ""
   forme.value = ""
   qte.value = 1
   photo.value = ""
@@ -44,18 +55,55 @@ const envoyer = () => {
 
 <template>
 
-  <h2>Ajouter un médicament</h2>
+  <div class="formulaire">
 
-  <input v-model="denomination" placeholder="Nom">
+    <h2>Ajouter un médicament</h2>
 
-  <input v-model="forme" placeholder="Forme">
+    <input
+        v-model="denomination"
+        placeholder="Nom normal"
+    >
 
-  <input v-model="qte" type="number">
+    <br><br>
 
-  <input type="file" @change="handleFileUpload">
+    <input
+        v-model="denominationMagique"
+        placeholder="Nom magique"
+    >
 
-  <button @click="envoyer">
-    Ajouter
-  </button>
+    <br><br>
+
+    <input
+        v-model="forme"
+        placeholder="Forme pharmaceutique"
+    >
+
+    <br><br>
+
+    <input
+        v-model="qte"
+        type="number"
+    >
+
+    <br><br>
+
+    <input
+        type="file"
+        @change="handleFileUpload"
+    >
+
+    <br><br>
+
+    <button @click="envoyer">
+      Ajouter
+    </button>
+
+  </div>
 
 </template>
+
+<style>
+.formulaire {
+  margin-bottom: 20px;
+}
+</style>

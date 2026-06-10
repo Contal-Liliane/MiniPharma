@@ -17,38 +17,57 @@ import {
 const medicaments = ref([])
 const modMedicament = ref(null)
 
-// charger
+const modeMagique = ref(false)
+
+// charger médicaments
 const chargerMedicaments = () => {
+
   getMedicaments()
       .then(data => {
+
         medicaments.value = data
       })
 }
 
 // ajouter
 const ajouterMedicament = (nouveau) => {
+
   addMedicament(nouveau)
       .then(() => {
+
         chargerMedicaments()
       })
 }
 
 // supprimer
 const supprimerMedicament = (id) => {
+
   deleteMedicament(id)
       .then(() => {
+
         chargerMedicaments()
       })
 }
 
-// +1 -1
+// quantité
 const modifierQuantite = (med, delta) => {
 
   updateMedicament({
+
     id: med.id,
-    qte: med.qte + delta
+
+    denomination: med.denomination,
+
+    denominationMagique: med.denomination,
+
+    formepharmaceutique: med.formepharmaceutique,
+
+    qte: med.qte + delta,
+
+    photo: med.photo
   })
       .then(() => {
+
         chargerMedicaments()
       })
 }
@@ -58,7 +77,9 @@ const modifierMedicament = (modif) => {
 
   updateMedicament(modif)
       .then(() => {
+
         chargerMedicaments()
+
         modMedicament.value = null
       })
 }
@@ -67,17 +88,39 @@ const modifierMedicament = (modif) => {
 const rechercher = (mot) => {
 
   if (mot === "") {
+
     chargerMedicaments()
+
     return
   }
 
   searchMedicaments(mot)
       .then(data => {
+
         medicaments.value = data
       })
 }
 
+// changer mode
+const changerMode = () => {
+
+  modeMagique.value = !modeMagique.value
+
+  if (modeMagique.value) {
+
+    changerApi(105)
+  }
+
+  else {
+
+    changerApi(5)
+  }
+
+  chargerMedicaments()
+}
+
 onMounted(() => {
+
   chargerMedicaments()
 })
 </script>
@@ -86,7 +129,14 @@ onMounted(() => {
 
   <h1>Ma pharmacie</h1>
 
-  <!-- recherche -->
+  <button @click="changerMode">
+
+    {{ modeMagique ? '🧙 Mode normal' : '🪄 Mode magique' }}
+
+  </button>
+
+  <br><br>
+
   <input
       type="text"
       placeholder="Rechercher..."
@@ -95,12 +145,10 @@ onMounted(() => {
 
   <br><br>
 
-  <!-- ajout -->
   <FormulaireAjout
       @ajouter="ajouterMedicament"
   />
 
-  <!-- liste -->
   <ListeMedicaments
       :medicaments="medicaments"
       @plus="(med) => modifierQuantite(med, 1)"
@@ -109,7 +157,6 @@ onMounted(() => {
       @modifier="modMedicament = $event"
   />
 
-  <!-- modifier -->
   <ModifierMedicaments
       v-if="modMedicament"
       :medicament="modMedicament"

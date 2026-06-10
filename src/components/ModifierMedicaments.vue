@@ -6,11 +6,12 @@ const props = defineProps(['medicament'])
 const emit = defineEmits(['modifier'])
 
 const denomination = ref(props.medicament.denomination)
+const denominationMagique = ref("")
 const forme = ref(props.medicament.formepharmaceutique)
 const qte = ref(props.medicament.qte)
+const photo = ref(props.medicament.photo)
 
-const photo = ref("")
-
+// image
 const handleFileUpload = (event) => {
 
   const file = event.target.files[0]
@@ -20,23 +21,29 @@ const handleFileUpload = (event) => {
   const reader = new FileReader()
 
   reader.onload = () => {
+
     photo.value = reader.result
   }
 
   reader.readAsDataURL(file)
 }
 
+// modifier
 const valider = () => {
 
   const modif = {
-    id: props.medicament.id,
-    denomination: denomination.value,
-    formepharmaceutique: forme.value,
-    qte: Number(qte.value)
-  }
 
-  if (photo.value !== "") {
-    modif.photo = photo.value
+    id: props.medicament.id,
+
+    denomination: denomination.value,
+
+    denominationMagique: denominationMagique.value,
+
+    formepharmaceutique: forme.value,
+
+    qte: Number(qte.value),
+
+    photo: photo.value
   }
 
   emit('modifier', modif)
@@ -49,13 +56,40 @@ const valider = () => {
 
     <h3>Modifier médicament</h3>
 
-    <input v-model="denomination" placeholder="Nom">
+    <input
+        v-model="denomination"
+        placeholder="Nom normal"
+    >
 
-    <input v-model="forme" placeholder="Forme">
+    <br><br>
 
-    <input v-model="qte" type="number">
+    <input
+        v-model="denominationMagique"
+        placeholder="Nom magique"
+    >
 
-    <input type="file" @change="handleFileUpload">
+    <br><br>
+
+    <input
+        v-model="forme"
+        placeholder="Forme"
+    >
+
+    <br><br>
+
+    <input
+        v-model="qte"
+        type="number"
+    >
+
+    <br><br>
+
+    <input
+        type="file"
+        @change="handleFileUpload"
+    >
+
+    <br><br>
 
     <button @click="valider">
       Valider
