@@ -3,7 +3,6 @@ import { ref, onMounted } from 'vue'
 
 import ListeMedicaments from './components/ListeMedicaments.vue'
 import FormulaireAjout from './components/FormulaireAjout.vue'
-import ModifierMedicaments from './components/ModifierMedicaments.vue'
 
 import {
   getMedicaments,
@@ -15,162 +14,156 @@ import {
 } from './Medicaments.js'
 
 const medicaments = ref([])
-const modMedicament = ref(null)
-
 const modeMagique = ref(false)
 
-// charger médicaments
+// charger données
 const chargerMedicaments = () => {
-
-  getMedicaments()
-      .then(data => {
-
-        medicaments.value = data
-      })
+  getMedicaments().then(data => {
+    medicaments.value = data
+  })
 }
 
 // ajouter
 const ajouterMedicament = (nouveau) => {
-
-  addMedicament(nouveau)
-      .then(() => {
-
-        chargerMedicaments()
-      })
+  addMedicament(nouveau).then(() => {
+    chargerMedicaments()
+  })
 }
 
 // supprimer
 const supprimerMedicament = (id) => {
-
-  deleteMedicament(id)
-      .then(() => {
-
-        chargerMedicaments()
-      })
+  deleteMedicament(id).then(() => {
+    chargerMedicaments()
+  })
 }
 
-// quantité
+// +1 / -1
 const modifierQuantite = (med, delta) => {
 
   updateMedicament({
-
     id: med.id,
-
     denomination: med.denomination,
-
     denominationMagique: med.denomination,
-
     formepharmaceutique: med.formepharmaceutique,
-
     qte: med.qte + delta,
-
-    photo: med.photo
+    photo: med.photo,
+    description: med.description,
+    effetsSecondaires: med.effetsSecondaires
   })
-      .then(() => {
-
-        chargerMedicaments()
-      })
+  .then(() => chargerMedicaments())
 }
 
 // modifier
 const modifierMedicament = (modif) => {
-
-  updateMedicament(modif)
-      .then(() => {
-
-        chargerMedicaments()
-
-        modMedicament.value = null
-      })
+  updateMedicament(modif).then(() => {
+    chargerMedicaments()
+  })
 }
 
 // recherche
 const rechercher = (mot) => {
+  if (mot === "") return chargerMedicaments()
 
-  if (mot === "") {
-
-    chargerMedicaments()
-
-    return
-  }
-
-  searchMedicaments(mot)
-      .then(data => {
-
-        medicaments.value = data
-      })
+  searchMedicaments(mot).then(data => {
+    medicaments.value = data
+  })
 }
 
-// changer mode
+// ✅ ✅ ✅ BOUTON MAGIQUE FIXÉ
 const changerMode = () => {
 
   modeMagique.value = !modeMagique.value
 
-  if (modeMagique.value) {
-
+  if (modeMagique.value === true) {
     changerApi(105)
-  }
-
-  else {
-
+  } else {
     changerApi(5)
   }
 
   chargerMedicaments()
+
+  console.log("Mode magique :", modeMagique.value) // debug
 }
 
 onMounted(() => {
-
   chargerMedicaments()
 })
 </script>
 
 <template>
 
-  <h1>Ma pharmacie</h1>
+<div class="container">
 
-  <button @click="changerMode">
+  <div class="header">
+    <h1>MiniPharma</h1>
 
-    {{ modeMagique ? '🧙 Mode normal' : '🪄 Mode magique' }}
-
-  </button>
-
-  <br><br>
+    <!-- ✅ BOUTON QUI CHANGE TEXTE -->
+    <button class="magique" @click="changerMode">
+      {{ modeMagique ? '🧙 Mode normal' : '✨ Mode magique' }}
+    </button>
+  </div>
 
   <input
-      type="text"
-      placeholder="Rechercher..."
-      @input="rechercher($event.target.value)"
+    type="text"
+    placeholder="Rechercher..."
+    @input="rechercher($event.target.value)"
   >
 
-  <br><br>
-
-  <FormulaireAjout
-      @ajouter="ajouterMedicament"
-  />
+  <FormulaireAjout @ajouter="ajouterMedicament" />
 
   <ListeMedicaments
-      :medicaments="medicaments"
-      @plus="(med) => modifierQuantite(med, 1)"
-      @moins="(med) => modifierQuantite(med, -1)"
-      @supprimer="supprimerMedicament"
-      @modifier="modMedicament = $event"
+    :medicaments="medicaments"
+    @plus="(med) => modifierQuantite(med, 1)"
+    @moins="(med) => modifierQuantite(med, -1)"
+    @supprimer="supprimerMedicament"
+    @modifier="modifierMedicament"
   />
 
-  <ModifierMedicaments
-      v-if="modMedicament"
-      :medicament="modMedicament"
-      @modifier="modifierMedicament"
-  />
+</div>
 
 </template>
 
 <style>
+
 body {
+  margin: 0;
   font-family: Arial;
+  background: #ececf3;
 }
 
-h1 {
-  text-align: center;
+/* plein écran */
+.container {
+  width: 100%;
+  padding: 20px;
 }
+
+/* header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 {
+  color: #4f46e5;
+}
+
+/* bouton */
+.magique {
+  background: linear-gradient(90deg, purple, pink);
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+/* barre recherche */
+.search {
+  width: 100%;
+  padding: 12px;
+  margin: 15px 0;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
 </style>
