@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+
 const emit = defineEmits(['ajouter'])
 
 const denomination = ref("")
@@ -7,8 +8,8 @@ const denominationMagique = ref("")
 const forme = ref("")
 const qte = ref(1)
 const photo = ref("")
-const description = ref("")
-const effetsSecondaires = ref("")
+
+const fileInput = ref(null)
 
 const handleFileUpload = (e) => {
   const file = e.target.files[0]
@@ -20,24 +21,22 @@ const handleFileUpload = (e) => {
 }
 
 const envoyer = () => {
+
   emit('ajouter',{
     denomination: denomination.value,
     denominationMagique: denominationMagique.value,
     formepharmaceutique: forme.value,
     qte: qte.value,
-    photo: photo.value,
-    description: description.value,
-    effetsSecondaires: effetsSecondaires.value
+    photo: photo.value
   })
 
-  // reset
   denomination.value = ""
   denominationMagique.value = ""
   forme.value = ""
   qte.value = 1
   photo.value = ""
-  description.value = ""
-  effetsSecondaires.value = ""
+
+  fileInput.value.value = ""
 }
 </script>
 
@@ -50,10 +49,7 @@ const envoyer = () => {
 <input v-model="forme" placeholder="Forme">
 <input v-model="qte" type="number">
 
-<textarea v-model="description" placeholder="Description / prise"></textarea>
-<textarea v-model="effetsSecondaires" placeholder="Effets secondaires"></textarea>
-
-<input type="file" @change="handleFileUpload">
+<input type="file" ref="fileInput" @change="handleFileUpload">
 
 <button @click="envoyer">Ajouter</button>
 

@@ -11,7 +11,6 @@ const forme = ref(props.medicament.formepharmaceutique)
 const qte = ref(props.medicament.qte)
 const photo = ref(props.medicament.photo)
 
-// image
 const handleFileUpload = (event) => {
 
   const file = event.target.files[0]
@@ -28,7 +27,6 @@ const handleFileUpload = (event) => {
   reader.readAsDataURL(file)
 }
 
-// modifier
 const valider = () => {
 
   const modif = {

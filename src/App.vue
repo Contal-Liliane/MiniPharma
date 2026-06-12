@@ -16,73 +16,93 @@ import {
 const medicaments = ref([])
 const modeMagique = ref(false)
 
-// charger données
 const chargerMedicaments = () => {
+
   getMedicaments().then(data => {
+
+    let images = JSON.parse(localStorage.getItem("imagesMed") || "{}")
+
+    data.forEach(m => {
+      if (images[m.id]) {
+        m.photo = images[m.id]
+      }
+    })
+
     medicaments.value = data
   })
 }
 
-// ajouter
+const sauvegarderImage = (med) => {
+
+  let images = JSON.parse(localStorage.getItem("imagesMed") || "{}")
+
+  if (med.photo && med.photo.startsWith("data")) {
+    images[med.id] = med.photo
+  }
+
+  localStorage.setItem("imagesMed", JSON.stringify(images))
+}
+
 const ajouterMedicament = (nouveau) => {
   addMedicament(nouveau).then(() => {
     chargerMedicaments()
   })
 }
 
-// supprimer
 const supprimerMedicament = (id) => {
   deleteMedicament(id).then(() => {
     chargerMedicaments()
   })
 }
 
-// +1 / -1
-const modifierQuantite = (med, delta) => {
-
-  updateMedicament({
-    id: med.id,
-    denomination: med.denomination,
-    denominationMagique: med.denomination,
-    formepharmaceutique: med.formepharmaceutique,
-    qte: med.qte + delta,
-    photo: med.photo,
-    description: med.description,
-    effetsSecondaires: med.effetsSecondaires
-  })
-  .then(() => chargerMedicaments())
-}
-
-// modifier
 const modifierMedicament = (modif) => {
+
+  sauvegarderImage(modif)
+
   updateMedicament(modif).then(() => {
     chargerMedicaments()
   })
 }
 
-// recherche
-const rechercher = (mot) => {
-  if (mot === "") return chargerMedicaments()
+const modifierQuantite = (med, delta) => {
 
-  searchMedicaments(mot).then(data => {
-    medicaments.value = data
+  const modif = {
+    id: med.id,
+    denomination: med.denomination,
+    denominationMagique: med.denomination,
+    formepharmaceutique: med.formepharmaceutique,
+    qte: med.qte + delta,
+    photo: med.photo
+  }
+
+  sauvegarderImage(modif)
+
+  updateMedicament(modif).then(() => {
+    chargerMedicaments()
   })
 }
 
-// ✅ ✅ ✅ BOUTON MAGIQUE FIXÉ
+const rechercher = (mot) => {
+  if (mot === "") {
+    chargerMedicaments()
+  } else {
+    searchMedicaments(mot).then(data => {
+      medicaments.value = data
+    })
+  }
+}
+
 const changerMode = () => {
 
   modeMagique.value = !modeMagique.value
 
-  if (modeMagique.value === true) {
+  if (modeMagique.value) {
     changerApi(105)
   } else {
     changerApi(5)
   }
 
   chargerMedicaments()
-
-  console.log("Mode magique :", modeMagique.value) // debug
 }
 
 onMounted(() => {
@@ -97,7 +117,6 @@ onMounted(() => {
   <div class="header">
     <h1>MiniPharma</h1>
 
-    <!-- ✅ BOUTON QUI CHANGE TEXTE -->
     <button class="magique" @click="changerMode">
       {{ modeMagique ? '🧙 Mode normal' : '✨ Mode magique' }}
     </button>
@@ -131,13 +150,12 @@ body {
   background: #ececf3;
 }
 
-/* plein écran */
 .container {
   width: 100%;
-  padding: 20px;
+  padding: 30px;
+  box-sizing: border-box;
 }
 
-/* header */
 .header {
   display: flex;
   justify-content: space-between;
@@ -148,7 +166,6 @@ body {
   color: #4f46e5;
 }
 
-/* bouton */
 .magique {
   background: linear-gradient(90deg, purple, pink);
   color: white;
@@ -157,8 +174,7 @@ body {
   border-radius: 10px;
 }
 
-/* barre recherche */
-.search {
+input {
   width: 100%;
   padding: 12px;
   margin: 15px 0;

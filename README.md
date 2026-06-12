@@ -1,38 +1,78 @@
-# MiniPorjetPharmacie
+# MiniPharma
 
-This template should help get you started developing with Vue 3 in Vite.
+MiniPharma est une petite application web qui permet de gérer des médicaments.
 
-## Recommended IDE Setup
+Le but du projet était de créer une interface simple pour ajouter, modifier et supprimer des médicaments, tout en utilisant une API.
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-## Recommended Browser Setup
+## Fonctionnalités
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+Avec l’application, on peut :
 
-## Customize configuration
+- Ajouter un médicament avec un nom, une forme, une quantité et une image
+- Supprimer un médicament
+- Modifier un médicament
+- Changer la quantité avec des boutons + et -
+- Rechercher un médicament
+- Activer un mode “magique” qui change les données utilisées
 
-See [Vite Configuration Reference](https://vite.dev/config/).
 
-## Project Setup
+## Comment ça fonctionne
 
-```sh
+L’application fonctionne avec Vue.js.
+
+Il y a un composant principal (App.vue) qui gère les données.
+
+Ensuite, d’autres composants servent à :
+
+- Ajouter un médicament
+- Afficher la liste des médicaments
+- Modifier un médicament
+
+Quand on clique sur un bouton, un événement est envoyé à App.vue, qui appelle ensuite une fonction pour modifier les données.
+
+
+## API
+
+L’application utilise une API externe pour stocker les médicaments.
+
+Il y a deux APIs :
+
+- une normale (id 5)
+- une magique (id 105)
+
+Toutes les actions (ajout, modification, suppression) sont faites sur les deux APIs pour qu’elles restent synchronisées.
+
+
+## Images
+
+Pour les images, l’API ne les gère pas bien lors des modifications.
+
+Du coup, les images sont sauvegardées en local avec localStorage pour éviter qu’elles disparaissent.
+
+
+## Lancer le projet
+
+Installer les dépendances :
+
 npm install
-```
 
-### Compile and Hot-Reload for Development
+Puis lancer le projet :
 
-```sh
 npm run dev
-```
 
-### Compile and Minify for Production
+## Architecture de l’application
 
-```sh
-npm run build
-```
+Voici un schéma représentant l’architecture de l’application.
+
+Il montre comment les différents composants sont organisés et comment ils communiquent entre eux.
+
+Le composant principal est App.vue, qui gère les données et les actions.
+
+Les autres composants (FormulaireAjout, ListeMedicaments, ModifierMedicaments) envoient des événements à App.vue pour déclencher des actions comme ajouter, modifier ou supprimer un médicament.
+
+Les appels API sont gérés dans le fichier Medicaments.js, qui utilise fetch pour communiquer avec les deux APIs (5 et 105).
+
+La synchronisation est faite dans les deux sens pour que les données soient toujours identiques.
+
+![img_2.png](img_2.png)
