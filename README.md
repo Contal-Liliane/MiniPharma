@@ -67,12 +67,5 @@ Voici un schéma représentant l’architecture de l’application.
 
 Il montre comment les différents composants sont organisés et comment ils communiquent entre eux.
 
-Le composant principal est App.vue, qui gère les données et les actions.
 
-Les autres composants (FormulaireAjout, ListeMedicaments, ModifierMedicaments) envoient des événements à App.vue pour déclencher des actions comme ajouter, modifier ou supprimer un médicament.
 
-Les appels API sont gérés dans le fichier Medicaments.js, qui utilise fetch pour communiquer avec les deux APIs (5 et 105).
-
-La synchronisation est faite dans les deux sens pour que les données soient toujours identiques.
-
-![img_2.png](img_2.png)
