@@ -42,6 +42,7 @@ Il y a deux APIs :
 - une magique (id 105)
 
 Toutes les actions (ajout, modification, suppression) sont faites sur les deux APIs pour qu’elles restent synchronisées.
+test
 
 
 ## Images
