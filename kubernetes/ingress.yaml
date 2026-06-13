@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minipharma-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencryptcluster
+spec:
+  rules:
+    - host: minipharma.lcontal.chl.connected-health.fr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: minipharma-service
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - minipharma.lcontal.chl.connected-health.fr
+      secretName: minipharma-cert

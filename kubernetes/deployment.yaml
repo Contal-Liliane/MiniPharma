@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minipharma-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minipharma
+  template:
+    metadata:
+      labels:
+        app: minipharma
+    spec:
+      containers:
+        - image: registry.gitlab.com/contal-liliane/minipharma:latest
+          name: minipharma
+      imagePullSecrets:
+        - name: regcred
